@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ôn thi chứng chỉ Claude</title>
+<meta name="description" content="Sổ tay kiến thức và bộ đề luyện cho CCAR-F, CCAR-P, CCDV-F.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap">
+<style>
+/* Bố cục: một thanh tab cố định phía trên, bên dưới là khung hiển thị trang của tab đang chọn (sổ tay hoặc trang luyện đề).
+   Màu và phông giống các trang trainer để chuyển tab không bị "nhảy" giao diện. */
+:root{
+  --bg:#FDFBF5; --bar:#F2EDE2; --ink:#201C16; --ink-2:#463E35; --ink-3:#5B5347;
+  --rule:#DED6C4; --rule-2:#8F8269; --accent:#7F5405; --accent-bg:rgba(127,84,5,.11); --on-accent:#FFFFFF;
+  --sans:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#1C1712; --bar:#201A15; --ink:#F1EFEA; --ink-2:#C6BCAA; --ink-3:#ABA08B;
+    --rule:#3D3428; --rule-2:#786853; --accent:#F7C25A; --accent-bg:rgba(247,194,90,.14); --on-accent:#171310;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{display:flex;flex-direction:column;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+header{flex:0 0 auto;background:var(--bar);border-bottom:1px solid var(--rule);
+  padding-top:env(safe-area-inset-top,0px);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.row{display:flex;align-items:center;gap:10px 22px;min-height:56px;flex-wrap:wrap;padding-block:8px}
+.brand{display:flex;flex-direction:column;line-height:1.15;flex:0 0 auto}
+.brand b{font-size:18px;font-weight:700;letter-spacing:-.005em}
+.brand span{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);letter-spacing:.04em}
+.tabs{flex:1 1 auto;min-width:0;display:flex;gap:18px;overflow-x:auto;scrollbar-width:thin;padding-block:2px}
+.grp{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.grp .code{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--ink-3);margin-right:2px}
+.tab{font:600 14.5px var(--sans);color:var(--ink-2);background:transparent;border:1px solid var(--rule-2);border-radius:999px;padding:5px 13px;cursor:pointer;white-space:nowrap}
+.tab:hover{color:var(--ink);border-color:var(--ink-3)}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.open{flex:0 0 auto;font:600 13.5px var(--sans);color:var(--accent);text-decoration:none;border-bottom:1px solid currentColor}
+.open:hover{color:var(--ink)}
+@media (max-width:640px){ .open{display:none} .brand span{display:none} }
+
+main{flex:1 1 auto;min-height:0;position:relative}
+.panel{position:absolute;inset:0}
+.panel iframe{display:block;width:100%;height:100%;border:0;background:var(--bg)}
+.loading{position:absolute;inset:0;display:grid;place-items:center;font:500 15px var(--sans);color:var(--ink-3);pointer-events:none}
+</style>
+</head>
+<body>
+<header>
+  <div class="row">
+    <div class="brand"><b>Ôn thi chứng chỉ Claude</b><span>CCAR-F · CCAR-P · CCDV-F</span></div>
+    <nav class="tabs" role="tablist" aria-label="Chọn tài liệu">
+      <div class="grp" role="presentation" title="Claude Certified Architect – Foundations">
+        <span class="code">CCAR-F</span>
+        <button class="tab" role="tab" id="tab-ccar-f-sotay" aria-controls="panel-ccar-f-sotay" data-id="ccar-f-sotay" data-src="CCAR-F_so-tay.html" aria-selected="false">Sổ tay</button>
+        <button class="tab" role="tab" id="tab-ccar-f-de" aria-controls="panel-ccar-f-de" data-id="ccar-f-de" data-src="CCAR-F_trainer.html" aria-selected="false">Luyện đề</button>
+      </div>
+      <div class="grp" role="presentation" title="Claude Certified Architect – Professional">
+        <span class="code">CCAR-P</span>
+        <button class="tab" role="tab" id="tab-ccar-p-sotay" aria-controls="panel-ccar-p-sotay" data-id="ccar-p-sotay" data-src="CCAR-P_so-tay.html" aria-selected="false">Sổ tay</button>
+        <button class="tab" role="tab" id="tab-ccar-p-de" aria-controls="panel-ccar-p-de" data-id="ccar-p-de" data-src="CCAR-P_trainer.html" aria-selected="false">Luyện đề</button>
+      </div>
+      <div class="grp" role="presentation" title="Claude Certified Developer – Foundations">
+        <span class="code">CCDV-F</span>
+        <button class="tab" role="tab" id="tab-ccdv-f-de" aria-controls="panel-ccdv-f-de" data-id="ccdv-f-de" data-src="CCDV-F_trainer.html" aria-selected="false">Luyện đề</button>
+      </div>
+    </nav>
+    <a class="open" id="open" href="CCAR-F_so-tay.html" target="_blank" rel="noopener">Mở trang này riêng ↗</a>
+  </div>
+</header>
+<main id="panels"></main>
+
+<script>
+(function(){
+  var tabs=[].slice.call(document.querySelectorAll(".tab"));
+  var panels=document.getElementById("panels");
+  var openLink=document.getElementById("open");
+  var made={};
+
+  function panelFor(tab){
+    var id=tab.getAttribute("data-id");
+    if(made[id])return made[id];
+    var p=document.createElement("section");
+    p.className="panel";p.id="panel-"+id;p.setAttribute("role","tabpanel");p.setAttribute("aria-labelledby",tab.id);
+    var msg=document.createElement("div");msg.className="loading";msg.textContent="Đang tải…";
+    var f=document.createElement("iframe");
+    f.title=tab.closest(".grp").querySelector(".code").textContent+" · "+tab.textContent;
+    f.addEventListener("load",function(){msg.remove();});
+    f.src=tab.getAttribute("data-src");
+    p.appendChild(msg);p.appendChild(f);panels.appendChild(p);
+    made[id]=p;return p;
+  }
+
+  function show(id,focus){
+    var tab=tabs.filter(function(t){return t.getAttribute("data-id")===id;})[0]||tabs[0];
+    tabs.forEach(function(t){var on=t===tab;t.setAttribute("aria-selected",on?"true":"false");t.tabIndex=on?0:-1;});
+    var p=panelFor(tab);
+    Object.keys(made).forEach(function(k){made[k].hidden=made[k]!==p;});
+    openLink.href=tab.getAttribute("data-src");
+    document.title=tab.closest(".grp").querySelector(".code").textContent+" · "+tab.textContent+" — Ôn thi chứng chỉ Claude";
+    tab.scrollIntoView({block:"nearest",inline:"nearest"});
+    if(focus)tab.focus();
+    try{localStorage.setItem("claudecert.tab",tab.getAttribute("data-id"));}catch(e){}
+  }
+
+  tabs.forEach(function(t,i){
+    t.addEventListener("click",function(){location.hash=t.getAttribute("data-id");});
+    t.addEventListener("keydown",function(e){
+      var j=null;
+      if(e.key==="ArrowRight")j=(i+1)%tabs.length;
+      else if(e.key==="ArrowLeft")j=(i-1+tabs.length)%tabs.length;
+      else if(e.key==="Home")j=0;
+      else if(e.key==="End")j=tabs.length-1;
+      if(j!==null){e.preventDefault();location.hash=tabs[j].getAttribute("data-id");tabs[j].focus();}
+    });
+  });
+
+  function fromHash(){
+    var h=location.hash.slice(1),saved=null;
+    if(!h){try{saved=localStorage.getItem("claudecert.tab");}catch(e){}}
+    show(h||saved||"ccar-f-sotay");
+  }
+  window.addEventListener("hashchange",fromHash);
+  fromHash();
+})();
+</script>
+</body>
+</html>
