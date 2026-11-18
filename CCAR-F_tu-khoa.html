@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Từ khóa CCAR-F</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Serif:wght@400;600&display=swap">
+<style>
+/* Bố cục: bảng tra một cột "từ khóa trong đề → đáp án", thanh công cụ dính để tìm, che đáp án và nhảy nhóm. Cùng bảng màu với trainer. */
+:root{
+  --bg:#FDFBF5; --bg-2:#F5F1E6; --band:#F2EDE2; --ink:#201C16; --ink-2:#463E35; --ink-3:#5B5347;
+  --rule:#DED6C4; --rule-2:#8F8269; --ok:#256B42; --ok-bg:rgba(37,107,66,.09); --bad:#B32E1F;
+  --flag:#7F5405; --flag-bg:rgba(127,84,5,.11); --on-accent:#FFFFFF;
+  --sans:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
+  --serif:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#1C1712; --bg-2:#252019; --band:#201A15; --ink:#F1EFEA; --ink-2:#C6BCAA; --ink-3:#ABA08B;
+  --rule:#3D3428; --rule-2:#786853; --ok:#8FD98C; --ok-bg:rgba(143,217,140,.11); --bad:#FF9781;
+  --flag:#F7C25A; --flag-bg:rgba(247,194,90,.14); --on-accent:#171310; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#1C1712; --bg-2:#252019; --band:#201A15; --ink:#F1EFEA; --ink-2:#C6BCAA; --ink-3:#ABA08B;
+  --rule:#3D3428; --rule-2:#786853; --ok:#8FD98C; --ok-bg:rgba(143,217,140,.11); --bad:#FF9781;
+  --flag:#F7C25A; --flag-bg:rgba(247,194,90,.14); --on-accent:#171310; color-scheme:dark; }
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5}
+[hidden]{display:none!important}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:2px solid var(--flag);outline-offset:2px;border-radius:3px}
+code{font-family:var(--mono);font-size:.86em;background:var(--bg-2);border:1px solid var(--rule);border-radius:4px;padding:0 .3em;overflow-wrap:anywhere}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.2}
+.hero{background:var(--band);border-bottom:1px solid var(--rule)}
+.hero .wrap{padding-block:28px 24px;display:grid;gap:14px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.hero h1{font-size:clamp(30px,4.6vw,44px);font-weight:700}
+.lead{font-family:var(--serif);font-size:17px;color:var(--ink-2);max-width:46rem;margin:0}
+.cols{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));align-items:start}
+.panel{background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:14px 16px}
+.panel h3{font-size:15px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--flag);margin-bottom:8px}
+.plan{margin:0;padding:0;list-style:none;display:grid;gap:7px;counter-reset:p}
+.plan li{display:grid;grid-template-columns:5.6rem minmax(0,1fr);gap:8px;font-size:15px;color:var(--ink-2)}
+.plan .t{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;padding-top:1px}
+.gold{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+.gold li{display:grid;gap:1px;font-size:15px}
+.gold b{font-family:var(--mono);font-size:12.5px;font-weight:600;color:var(--ink)}
+.gold span{color:var(--ink-2)}
+.wrong{margin:8px 0 0;padding-left:1.1em;display:grid;gap:3px;font-size:15px;color:var(--ink-2)}
+.wrong li::marker{color:var(--bad)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--bg);border-bottom:1px solid var(--rule)}
+.bar .wrap{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding-block:10px}
+.bar input[type=search]{flex:1 1 220px;min-width:0;font:500 15px var(--sans);color:var(--ink);background:var(--bg-2);border:1px solid var(--rule-2);border-radius:6px;padding:7px 10px}
+.tg{display:flex;gap:6px;align-items:center;font:600 14.5px var(--sans);color:var(--ink-2);cursor:pointer;white-space:nowrap}
+.tg input{width:16px;height:16px;accent-color:var(--flag)}
+.cnt{font:600 14px var(--mono);color:var(--ink-3);font-variant-numeric:tabular-nums;margin-left:auto}
+.chips{flex-basis:100%;display:flex;gap:6px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+.chips a{flex:0 0 auto;font:600 13.5px var(--sans);color:var(--ink-2);text-decoration:none;border:1px solid var(--rule);border-radius:999px;padding:3px 10px}
+.chips a:hover{border-color:var(--rule-2);color:var(--ink)}
+main{padding-block:10px 56px}
+.grp{scroll-margin-top:118px;margin-top:26px}
+.grp h2{display:flex;align-items:baseline;gap:10px;font-size:22px;font-weight:700;padding-bottom:8px;border-bottom:2px solid var(--ink)}
+.gl{font-family:var(--mono);font-size:14px;color:var(--flag)}
+.gc{margin-left:auto;font:500 13px var(--mono);color:var(--ink-3)}
+.row{display:grid;grid-template-columns:minmax(0,1fr);gap:4px 18px;padding:11px 4px;border-bottom:1px solid var(--rule)}
+@media (min-width:760px){ .row{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr) 5.5rem} }
+.kw{font-size:15.5px;color:var(--ink-2)}
+.kw b{color:var(--ink);font-weight:700}
+.pick{font-size:15.5px;color:var(--ink)}
+.pick::before{content:"→ ";color:var(--ok);font-weight:700}
+.pick b{color:var(--ok);font-weight:700}
+.trap{font-size:13.5px;color:var(--ink-3);margin-top:3px}
+.trap span{color:var(--bad);font-weight:600}
+.ref{font:500 12.5px var(--mono);color:var(--ink-3);text-align:left}
+@media (min-width:760px){ .ref{text-align:right} }
+.row.multi .ref{color:var(--flag);font-weight:600}
+body.drill .row .ans{filter:blur(7px);user-select:none;transition:filter .15s}
+body.drill .row.show .ans{filter:none;user-select:auto}
+body.drill .row{cursor:pointer}
+body.drill .row:hover{background:var(--bg-2)}
+body.only-multi .row:not(.multi){display:none}
+@media (prefers-reduced-motion: reduce){ body.drill .row .ans{transition:none} }
+.empty{font-size:15px;color:var(--flag);padding:16px 4px}
+footer{border-top:1px solid var(--rule);color:var(--ink-3);font-size:14px}
+footer .wrap{padding-block:18px 36px}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">CCAR-F · Claude Certified Architect – Foundations</div>
+  <h1>Từ khóa CCAR-F</h1>
+  <p class="lead">Thấy cụm từ này trong đề → chọn đáp án này. 131 mẫu phủ cả 162 câu của bộ đề luyện. Chữ đậm bên trái là tín hiệu cần nhận ra trong đề; dòng "Loại" là đáp án bẫy.</p>
+  <div class="cols">
+    <div class="panel"><h3>Kế hoạch 3 tiếng</h3><ol class="plan">
+      <li><span class="t">0:00–0:10</span><span>Đọc "Từ khóa vàng" và danh sách đáp án gần như luôn sai ở bên cạnh.</span></li>
+      <li><span class="t">0:10–0:55</span><span>Đọc hết bảng bên dưới: từ khóa → đáp án → bẫy.</span></li>
+      <li><span class="t">0:55–1:15</span><span>Bật "Che đáp án", nhìn từ khóa, tự trả lời rồi chạm để xem. Thiếu giờ thì bật thêm "Mẫu lặp lại".</span></li>
+      <li><span class="t">1:15–2:30</span><span>Làm đề trong trainer. Câu sai: gõ số câu (ví dụ Q56) vào ô tìm ở trang này.</span></li>
+      <li><span class="t">2:30–3:00</span><span>Ôn lại các dòng của câu sai, lướt "Từ khóa vàng" lần cuối.</span></li>
+    </ol></div>
+    <div class="panel"><h3>Từ khóa vàng</h3><ul class="gold"><li><b>guarantee · must · compliance · 100% · cannot be bypassed</b><span>Code: hook, kiểm tra trong tool, code điều phối, tool_choice. Không phải prompt.</span></li><li><b>structurally · eliminate</b><span>Đổi cấu trúc: gộp/tách tool, dùng ID, tool nguyên tử. Không phải few-shot.</span></li><li><b>first diagnostic step</b><span>Bước kiểm tra rẻ nhất, ví dụ /memory.</span></li><li><b>in the first place · at generation</b><span>Sửa ở khâu sinh (CLAUDE.md, prompt, schema), không lọc sau.</span></li><li><b>without overcomplicating · most efficient</b><span>Giải pháp gọn nhất, không thêm hạ tầng hay thêm lời gọi model.</span></li><li><b>inconsistent format · ambiguous cases · generalize</b><span>Few-shot.</span></li><li><b>independent · in parallel</b><span>Nhiều lời gọi Task trong cùng một response.</span></li><li><b>files changed since · renamed</b><span>Resume + báo cụ thể cái đã đổi. Dữ liệu tool cũ hết hạn: session mới + tóm tắt.</span></li><li><b>customer explicitly asks for a human</b><span>Escalate ngay, kèm lịch sử.</span></li><li><b>LEAST effective · NOT</b><span>Câu đảo chiều: tìm cái kém nhất.</span></li></ul>
+      <h3 style="margin-top:14px">Gần như luôn sai</h3><ul class="wrong"><li>Dùng model lớn hơn / mạnh hơn</li><li>temperature 0</li><li>Thêm IMPORTANT / CRITICAL / NEVER vào prompt</li><li>Vector database, message queue, classifier phải huấn luyện, fine-tune</li><li>Gỡ bỏ một tool để ép dùng tool khác</li><li>Tăng max_tokens khi đầu vào quá dài</li><li>/clear hoặc xóa context</li><li>Trả kết quả rỗng hoặc "success" khi có lỗi</li></ul></div>
+  </div>
+</div></header>
+<div class="bar"><div class="wrap">
+  <input id="q" type="search" placeholder="Tìm từ khóa hoặc số câu, ví dụ: hook, Q56" aria-label="Tìm từ khóa hoặc số câu" autocomplete="off">
+  <label class="tg" for="drill"><input id="drill" type="checkbox"> Che đáp án</label>
+  <label class="tg" for="multi"><input id="multi" type="checkbox"> Mẫu lặp lại (26)</label>
+  <span class="cnt" id="cnt" aria-live="polite">131 mẫu</span>
+  <nav class="chips" aria-label="Nhóm"><a href="#g-a">Bắt buộc &amp; bảo đảm</a><a href="#g-b">Coordinator &amp; subagent</a><a href="#g-c">Phân rã, plan mode, session</a><a href="#g-d">Thiết kế tool</a><a href="#g-e">Lỗi của tool</a><a href="#g-f">MCP &amp; built-in tool</a><a href="#g-g">Cấu hình Claude Code</a><a href="#g-h">Prompt &amp; structured output</a><a href="#g-i">Batch API</a><a href="#g-j">Kiến trúc review</a><a href="#g-k">Context &amp; hội thoại</a><a href="#g-l">Escalation &amp; mơ hồ</a><a href="#g-m">Confidence &amp; nguồn</a></nav>
+</div></div>
+<main class="wrap">
+<section class="grp" id="g-a" data-name="Bắt buộc &amp; bảo đảm"><h2><span class="gl">A</span>Bắt buộc &amp; bảo đảm<span class="gc">8 mẫu</span></h2>
+<div class="row" tabindex="0" data-ref="Q56"><div class="kw"><b>guarantee</b>, <b>compliance</b>, "cannot be left to model", 3% vi phạm dù prompt rõ</div><div class="ans"><div class="pick"><b>Hook</b> chặn tool call (PreToolUse): amount &gt; $500 → chặn + escalate</div><div class="trap"><span>Loại:</span> Prompt CRITICAL/NEVER, few-shot</div></div><div class="ref">Q56</div></div>
+<div class="row" tabindex="0" data-ref="Q145"><div class="kw">"<b>cannot be bypassed regardless of how the agent is prompted</b>"</div><div class="ans"><div class="pick"><b>Tool tự kiểm ngưỡng bên trong</b>: &lt;$500 chi, &gt;$500 tạo pending approval</div><div class="trap"><span>Loại:</span> Cờ approved_by_manager do agent đặt; audit ban đêm</div></div><div class="ref">Q145</div></div>
+<div class="row" tabindex="0" data-ref="Q150"><div class="kw">"<b>every interaction</b> ends with resolution or escalation", <b>max_turns</b> cạn</div><div class="ans"><div class="pick"><b>Code ở orchestration layer</b> kiểm tra sau khi loop dừng, tự gọi escalate_to_human</div><div class="trap"><span>Loại:</span> Nhắc trong system prompt; ngưỡng 80% lượt</div></div><div class="ref">Q150</div></div>
+<div class="row" tabindex="0" data-ref="Q103"><div class="kw">CLAUDE.md có quy tắc format, nhấn mạnh vẫn 15% sai</div><div class="ans"><div class="pick"><b>PostToolUse hook</b>, matcher <code>Edit|Write</code>, chạy Prettier</div><div class="trap"><span>Loại:</span> .claude/rules, Stop hook, skill thêm ví dụ</div></div><div class="ref">Q103</div></div>
+<div class="row multi" tabindex="0" data-ref="Q19 · Q95"><div class="kw">"<b>always</b> call extract_metadata <b>first</b>", model hay trả lời thẳng</div><div class="ans"><div class="pick"><code>tool_choice: {"type":"tool","name":"…"}</code>, bước sau ở lượt kế</div><div class="trap"><span>Loại:</span> "auto", "any", thứ tự trong mảng tools</div></div><div class="ref">Q19 · Q95</div></div>
+<div class="row" tabindex="0" data-ref="Q74"><div class="kw">Cần <b>guaranteed structured output</b>, <b>chưa biết loại tài liệu</b>, "auto" trả text</div><div class="ans"><div class="pick"><code>tool_choice: "any"</code> + mỗi loại một tool</div><div class="trap"><span>Loại:</span> Gọi phân loại trước; một schema chung</div></div><div class="ref">Q74</div></div>
+<div class="row multi" tabindex="0" data-ref="Q72 · Q91"><div class="kw">"<b>strictly conform</b> to schema", downstream reject JSON lỗi</div><div class="ans"><div class="pick"><b>Định nghĩa tool có input_schema = schema đích</b>, lấy từ tool_use</div><div class="trap"><span>Loại:</span> Prefill "{", "chỉ xuất JSON", regex + retry</div></div><div class="ref">Q72 · Q91</div></div>
+<div class="row" tabindex="0" data-ref="Q70"><div class="kw">Agent bỏ qua <b>dry_run</b> / preview 15%</div><div class="ans"><div class="pick"><b>preview trả token dùng một lần, execute bắt buộc token</b></div><div class="trap"><span>Loại:</span> Few-shot, annotation, "dry_run trong 60 giây"</div></div><div class="ref">Q70</div></div>
+</section>
+<section class="grp" id="g-b" data-name="Coordinator &amp; subagent"><h2><span class="gl">B</span>Coordinator &amp; subagent<span class="gc">12 mẫu</span></h2>
+<div class="row multi" tabindex="0" data-ref="Q32 · Q63"><div class="kw">Coordinator viết "<b>I'll ask the web search agent</b>…" nhưng không có subagent chạy, <b>không lỗi</b></div><div class="ans"><div class="pick"><code>allowedTools</code> <b>thiếu "Task"</b></div><div class="trap"><span>Loại:</span> max_tokens thấp; context forwarding</div></div><div class="ref">Q32 · Q63</div></div>
+<div class="row multi" tabindex="0" data-ref="Q39 · Q130"><div class="kw">Synthesis báo "<b>no research findings were provided</b>"</div><div class="ans"><div class="pick">Coordinator <b>không đưa output</b> của agent trước vào prompt</div><div class="trap"><span>Loại:</span> Shared memory, callback, kế thừa context</div></div><div class="ref">Q39 · Q130</div></div>
+<div class="row" tabindex="0" data-ref="Q38"><div class="kw">Thông tin từ web search agent sang document analysis agent <b>đi đường nào</b></div><div class="ans"><div class="pick"><b>Qua coordinator</b>: nhận output, đưa phần liên quan vào prompt khi gọi agent kế</div><div class="trap"><span>Loại:</span> Shared memory; subagent gọi nhau; message queue</div></div><div class="ref">Q38</div></div>
+<div class="row" tabindex="0" data-ref="Q106"><div class="kw">Hai subagent <b>độc lập</b> nhưng chạy <b>tuần tự</b></div><div class="ans"><div class="pick"><b>Nhiều lời gọi Task trong cùng một response</b></div><div class="trap"><span>Loại:</span> Async layer ngoài; đổi sang Haiku</div></div><div class="ref">Q106</div></div>
+<div class="row multi" tabindex="0" data-ref="Q44 · Q64"><div class="kw">Câu đơn giản cũng qua cả 4 subagent; phân bố truy vấn <b>diverse and evolving</b></div><div class="ans"><div class="pick"><b>Coordinator phân tích từng truy vấn, chọn subagent động</b></div><div class="trap"><span>Loại:</span> Classifier huấn luyện, fast-path, pattern routing</div></div><div class="ref">Q44 · Q64</div></div>
+<div class="row" tabindex="0" data-ref="Q41"><div class="kw">Tóm tắt follow-up chậm 40s, truyền 80K token <b>coordinator đã có sẵn</b></div><div class="ans"><div class="pick"><b>Coordinator tự tóm tắt</b>, chỉ spawn cho phân tích phức tạp</div><div class="trap"><span>Loại:</span> Prompt caching; tóm tắt sinh trước</div></div><div class="ref">Q41</div></div>
+<div class="row multi" tabindex="0" data-ref="Q66 · Q111"><div class="kw">Agent phân tích <b>thấy gap</b> nhưng search đã xong / synthesis báo câu hỏi chưa có lời giải</div><div class="ans"><div class="pick"><b>Báo gap về coordinator → search có mục tiêu → gọi lại</b> tới khi đủ</div><div class="trap"><span>Loại:</span> Ghi chú hạn chế; synthesis tự search</div></div><div class="ref">Q66 · Q111</div></div>
+<div class="row" tabindex="0" data-ref="Q36"><div class="kw">Chỉ dẫn từng bước <b>fail in unexpected situations</b></div><div class="ans"><div class="pick">Giao <b>mục tiêu + tiêu chí chất lượng</b>, không giao thủ tục</div><div class="trap"><span>Loại:</span> "Research thoroughly"; thêm fallback</div></div><div class="ref">Q36</div></div>
+<div class="row" tabindex="0" data-ref="Q43"><div class="kw">12 precedent phân tích tuần tự, phải <b>giữ khả năng monitor/debug</b></div><div class="ans"><div class="pick">Coordinator <b>spawn song song</b> nhiều subagent, gộp kết quả</div><div class="trap"><span>Loại:</span> Message queue; subagent tự spawn con</div></div><div class="ref">Q43</div></div>
+<div class="row multi" tabindex="0" data-ref="Q45 · Q40"><div class="kw">Báo cáo <b>mất citation / attribution</b> sau các bước tóm tắt</div><div class="ans"><div class="pick"><b>Output có cấu trúc tách nội dung và metadata nguồn</b> (claim–source mapping)</div><div class="trap"><span>Loại:</span> Re-query nguồn; semantic similarity; prefix</div></div><div class="ref">Q45 · Q40</div></div>
+<div class="row" tabindex="0" data-ref="Q42"><div class="kw">Truyền cho report generator: 120K thô / 15K / bản nháp 3K</div><div class="ans"><div class="pick"><b>Bản nháp + source index có cấu trúc</b> (claim ↔ URL ↔ đoạn trích)</div><div class="trap"><span>Loại:</span> Truyền toàn bộ context; chỉ tên nguồn</div></div><div class="ref">Q42</div></div>
+<div class="row" tabindex="0" data-ref="Q54"><div class="kw">Agentic loop: sau lookup_order thì <b>quyết định bước tiếp thế nào</b></div><div class="ans"><div class="pick"><b>Kết quả tool vào lịch sử, model suy luận</b> chọn tool tiếp</div><div class="trap"><span>Loại:</span> Chuỗi tool cố định; cây quyết định</div></div><div class="ref">Q54</div></div>
+</section>
+<section class="grp" id="g-c" data-name="Phân rã, plan mode, session"><h2><span class="gl">C</span>Phân rã, plan mode, session<span class="gc">10 mẫu</span></h2>
+<div class="row" tabindex="0" data-ref="Q1"><div class="kw">Lỗi 500 <b>intermittent</b>, 200+ file, <b>chưa biết thành phần nào</b></div><div class="ans"><div class="pick"><b>Phân rã thích ứng động</b> theo phát hiện</div><div class="trap"><span>Loại:</span> Lập kế hoạch toàn bộ trước; chia cứng theo tầng</div></div><div class="ref">Q1</div></div>
+<div class="row" tabindex="0" data-ref="Q129"><div class="kw">"<b>same three-step workflow for every PR</b>"</div><div class="ans"><div class="pick"><b>Prompt chaining</b> (pipeline cố định) + bước tổng hợp</div><div class="trap"><span>Loại:</span> Orchestrator-workers; routing theo loại PR</div></div><div class="ref">Q129</div></div>
+<div class="row" tabindex="0" data-ref="Q109"><div class="kw">Thêm test cho legacy 200 file, <b>chưa có ưu tiên</b></div><div class="ans"><div class="pick"><b>Glob/Grep lập bản đồ</b>, ưu tiên module liên kết cao, điều chỉnh dần</div><div class="trap"><span>Loại:</span> Đọc hết 200 file; thứ tự alphabet</div></div><div class="ref">Q109</div></div>
+<div class="row" tabindex="0" data-ref="Q87"><div class="kw"><b>Breaking changes</b>, <b>45 files</b>, nhiều module</div><div class="ans"><div class="pick"><b>Plan mode</b> trước khi sửa</div><div class="trap"><span>Loại:</span> Sửa theo test fail; slash command máy móc</div></div><div class="ref">Q87</div></div>
+<div class="row multi" tabindex="0" data-ref="Q68 · Q102"><div class="kw"><b>Clear stack trace</b> / thêm <b>một điều kiện trong một hàm</b></div><div class="ans"><div class="pick"><b>Direct execution</b></div><div class="trap"><span>Loại:</span> Plan mode; extended thinking</div></div><div class="ref">Q68 · Q102</div></div>
+<div class="row" tabindex="0" data-ref="Q153"><div class="kw">Đổi tên hàm vs "<b>improve error handling throughout</b> module"</div><div class="ans"><div class="pick">Workflow nhiều pha cho <b>tác vụ mở</b> (error handling)</div><div class="trap"><span>Loại:</span> Cả hai như nhau</div></div><div class="ref">Q153</div></div>
+<div class="row" tabindex="0" data-ref="Q3"><div class="kw">Phiên <b>đã đặt tên</b>, đã làm việc ở codebase khác</div><div class="ans"><div class="pick"><code>--resume &lt;tên&gt;</code></div><div class="trap"><span>Loại:</span> --continue; --session-id</div></div><div class="ref">Q3</div></div>
+<div class="row multi" tabindex="0" data-ref="Q12 · Q4"><div class="kw"><b>3/12 file bị sửa</b> qua đêm / đồng đội <b>đổi tên 2 hàm</b></div><div class="ans"><div class="pick"><b>Resume + báo cụ thể cái đã đổi</b></div><div class="trap"><span>Loại:</span> Đọc lại hết; phiên mới; resume không báo</div></div><div class="ref">Q12 · Q4</div></div>
+<div class="row multi" tabindex="0" data-ref="Q10 · Q11 · Q127"><div class="kw">Khám phá <b>2 hướng độc lập</b> từ cùng một phân tích</div><div class="ans"><div class="pick"><code>fork_session</code></div><div class="trap"><span>Loại:</span> Làm tuần tự; xuất findings ra file</div></div><div class="ref">Q10 · Q11 · Q127</div></div>
+<div class="row" tabindex="0" data-ref="Q60"><div class="kw">Khách <b>quay lại sau 4 giờ</b>, tool result cũ "Pending Refund"</div><div class="ans"><div class="pick"><b>Session mới + tóm tắt có cấu trúc + gọi tool mới</b></div><div class="trap"><span>Loại:</span> Resume toàn bộ; gọi lại mọi tool</div></div><div class="ref">Q60</div></div>
+</section>
+<section class="grp" id="g-d" data-name="Thiết kế tool"><h2><span class="gl">D</span>Thiết kế tool<span class="gc">13 mẫu</span></h2>
+<div class="row multi" tabindex="0" data-ref="Q8 · Q15 · Q132"><div class="kw">Agent vẫn dùng <b>Grep/sed thay MCP tool</b>; mô tả tool <b>minimal</b> / chọn nhầm delete vs archive</div><div class="ans"><div class="pick"><b>Mở rộng mô tả tool</b>: khi nào dùng, khác gì, input/output</div><div class="trap"><span>Loại:</span> Gỡ Write/Grep; classifier định tuyến</div></div><div class="ref">Q8 · Q15 · Q132</div></div>
+<div class="row" tabindex="0" data-ref="Q155"><div class="kw">Hay <b>bỏ sót user_id</b> / truyền sai cấu trúc</div><div class="ans"><div class="pick"><b>Mô tả tham số rõ</b>: ý nghĩa, định dạng, required</div><div class="trap"><span>Loại:</span> Tên tham số dài; lỗi chi tiết</div></div><div class="ref">Q155</div></div>
+<div class="row multi" tabindex="0" data-ref="Q98 · Q141"><div class="kw"><b>Sai tổ hợp</b> tham số ("reps" cho chạy bộ) / thiếu tham số theo thao tác</div><div class="ans"><div class="pick"><b>Tách tool chuyên biệt</b></div><div class="trap"><span>Loại:</span> Enum từng trường; validation server</div></div><div class="ref">Q98 · Q141</div></div>
+<div class="row" tabindex="0" data-ref="Q31"><div class="kw">Tool chung có <b>free-text instruction</b>, output không nhất quán 35%</div><div class="ans"><div class="pick"><b>Tách tool theo mục đích</b> có contract input/output</div><div class="trap"><span>Loại:</span> Enum analysis_type; thêm ví dụ</div></div><div class="ref">Q31</div></div>
+<div class="row multi" tabindex="0" data-ref="Q139 · Q140"><div class="kw">Accuracy chọn tool tụt, <b>semantically overlapping tools</b>, "<b>structurally eliminates</b>"</div><div class="ans"><div class="pick"><b>Gộp tool trùng nghĩa</b> (+ include_tracking)</div><div class="trap"><span>Loại:</span> Few-shot; defer_loading; chia sub-agent</div></div><div class="ref">Q139 · Q140</div></div>
+<div class="row" tabindex="0" data-ref="Q118"><div class="kw">Biệt danh đội, định dạng ngày, <b>nhầm trận tái đấu</b></div><div class="ans"><div class="pick"><b>game_id + tool search_games</b></div><div class="trap"><span>Loại:</span> Enum + regex; thêm season</div></div><div class="ref">Q118</div></div>
+<div class="row" tabindex="0" data-ref="Q115"><div class="kw">"<b>slot no longer available</b>" 15% (race condition)</div><div class="ans"><div class="pick"><b>Tool nguyên tử</b> find_and_book_appointment</div><div class="trap"><span>Loại:</span> hold_slot; retry trong prompt</div></div><div class="ref">Q115</div></div>
+<div class="row" tabindex="0" data-ref="Q124"><div class="kw">200+ kết quả, <b>auto-fetch mọi trang</b> chậm 15–20s</div><div class="ans"><div class="pick"><b>Trang đầu + tổng số + cursor</b></div><div class="trap"><span>Loại:</span> max_pages = 2; top 50</div></div><div class="ref">Q124</div></div>
+<div class="row" tabindex="0" data-ref="Q123"><div class="kw">User duyệt rồi hỏi "<b>how much did that cost?</b>"</div><div class="ans"><div class="pick">Tool trả <b>dữ liệu có cấu trúc</b>: chi phí, project, tác động</div><div class="trap"><span>Loại:</span> Chờ 60s; cờ user_acknowledged</div></div><div class="ref">Q123</div></div>
+<div class="row" tabindex="0" data-ref="Q112"><div class="kw">Kết quả là chuỗi "Found 3 documents…", cần <b>workflow nhiều bước</b></div><div class="ans"><div class="pick">Trả <b>ID tài liệu + metadata</b></div><div class="trap"><span>Loại:</span> URL; mảng tiêu đề</div></div><div class="ref">Q112</div></div>
+<div class="row" tabindex="0" data-ref="Q146"><div class="kw"><b>Primary advantage</b> của JSON có trường so với text</div><div class="ans"><div class="pick"><b>Lấy đúng giá trị, không phải parse văn bản</b></div><div class="trap"><span>Loại:</span> "Deterministic"; ít token hơn</div></div><div class="ref">Q146</div></div>
+<div class="row" tabindex="0" data-ref="Q119"><div class="kw">Mỗi subagent có <b>18 tool</b>, dùng tool ngoài chuyên môn</div><div class="ans"><div class="pick">Quá nhiều lựa chọn; <b>4–5 tool theo vai trò</b></div><div class="trap"><span>Loại:</span> Coordinator định tuyến sai; hết context</div></div><div class="ref">Q119</div></div>
+<div class="row" tabindex="0" data-ref="Q113"><div class="kw"><b>50+ connector</b>, agent bỏ qua bước search</div><div class="ans"><div class="pick"><b>search_connectors thêm connector động</b> vào bộ tool</div><div class="trap"><span>Loại:</span> Mô tả dài; tìm-và-chạy tự động</div></div><div class="ref">Q113</div></div>
+</section>
+<section class="grp" id="g-e" data-name="Lỗi của tool"><h2><span class="gl">E</span>Lỗi của tool<span class="gc">8 mẫu</span></h2>
+<div class="row multi" tabindex="0" data-ref="Q65 · Q93"><div class="kw">Mọi lỗi đều "<b>Operation failed</b>", agent không phân biệt được</div><div class="ans"><div class="pick"><b>errorCategory + isRetryable + mô tả nguyên nhân</b></div><div class="trap"><span>Loại:</span> Tool analyze_error; few-shot; retry hết</div></div><div class="ref">Q65 · Q93</div></div>
+<div class="row multi" tabindex="0" data-ref="Q53 · Q59"><div class="kw">Agent <b>retry lỗi nghiệp vụ</b> (quá 30 ngày) 3–4 lượt</div><div class="ans"><div class="pick"><b>retryable: false + lời giải thích thân thiện cho khách</b></div><div class="trap"><span>Loại:</span> Few-shot đoán lỗi; tool kiểm tra trước</div></div><div class="ref">Q53 · Q59</div></div>
+<div class="row" tabindex="0" data-ref="Q97"><div class="kw">API thỉnh thoảng <b>503</b></div><div class="ans"><div class="pick"><b>Tool tự retry exponential backoff</b> rồi mới báo</div><div class="trap"><span>Loại:</span> Trả danh sách rỗng; báo ngay</div></div><div class="ref">Q97</div></div>
+<div class="row multi" tabindex="0" data-ref="Q114 · Q116"><div class="kw">Lỗi <b>transient</b> (timeout, 503) lẫn <b>non-transient</b> (403, 422, cú pháp)</div><div class="ans"><div class="pick">Transient: <b>retry trong tool</b>. Non-transient: <b>trả ngay kèm chi tiết</b></div><div class="trap"><span>Loại:</span> Retry mọi lỗi; "try again later"</div></div><div class="ref">Q114 · Q116</div></div>
+<div class="row" tabindex="0" data-ref="Q125"><div class="kw">MCP: <b>thiếu tham số bắt buộc</b> / API 404 / API 503</div><div class="ans"><div class="pick"><b>JSON-RPC error</b> / isError / isError</div><div class="trap"><span>Loại:</span> 404 thành JSON-RPC error</div></div><div class="ref">Q125</div></div>
+<div class="row" tabindex="0" data-ref="Q46"><div class="kw">Báo lỗi backend (order not found, DB lỗi) cho agent</div><div class="ans"><div class="pick">Tool result với <b>isError: true</b> + thông điệp</div><div class="trap"><span>Loại:</span> "success" + status; rỗng; exception</div></div><div class="ref">Q46</div></div>
+<div class="row" tabindex="0" data-ref="Q92"><div class="kw">"<b>execution failed</b>", agent retry mãi hoặc escalate ngay</div><div class="ans"><div class="pick"><b>Thông báo theo loại lỗi + gợi ý thử gì tiếp</b></div><div class="trap"><span>Loại:</span> Backoff trong tool; bỏ is_error</div></div><div class="ref">Q92</div></div>
+<div class="row" tabindex="0" data-ref="Q52"><div class="kw">process_refund <b>timeout</b> nhưng agent đã đủ thông tin</div><div class="ans"><div class="pick">Giải thích, xác nhận đủ điều kiện, <b>nói rõ lỗi hệ thống</b>, đề nghị escalate/thử lại</div><div class="trap"><span>Loại:</span> Hứa "sẽ hoàn tiền"; retry vô hạn</div></div><div class="ref">Q52</div></div>
+</section>
+<section class="grp" id="g-f" data-name="MCP &amp; built-in tool"><h2><span class="gl">F</span>MCP &amp; built-in tool<span class="gc">8 mẫu</span></h2>
+<div class="row" tabindex="0" data-ref="Q67"><div class="kw">Dữ liệu <b>Jira tiêu chuẩn</b>, đang copy-paste tay</div><div class="ans"><div class="pick"><b>Dùng MCP server có sẵn</b></div><div class="trap"><span>Loại:</span> curl qua Bash; tự viết server</div></div><div class="ref">Q67</div></div>
+<div class="row" tabindex="0" data-ref="Q110"><div class="kw">Agent gọi dò dẫm vì <b>không biết server chứa gì</b></div><div class="ans"><div class="pick"><b>MCP resources</b> (danh mục nội dung)</div><div class="trap"><span>Loại:</span> Gộp server; định tuyến từ khóa</div></div><div class="ref">Q110</div></div>
+<div class="row" tabindex="0" data-ref="Q152"><div class="kw">Tool từ <b>3 MCP server</b> dùng thế nào</div><div class="ans"><div class="pick"><b>Khám phá lúc kết nối, dùng đồng thời</b></div><div class="trap"><span>Loại:</span> Chọn một server mỗi lượt</div></div><div class="ref">Q152</div></div>
+<div class="row" tabindex="0" data-ref="Q162"><div class="kw">Server <b>cả nhóm dùng</b> vs server <b>chỉ mình bạn thử</b></div><div class="ans"><div class="pick"><code>.mcp.json</code> vs <code>~/.claude.json</code></div><div class="trap"><span>Loại:</span> Đảo ngược</div></div><div class="ref">Q162</div></div>
+<div class="row" tabindex="0" data-ref="Q2"><div class="kw"><b>Edit fails</b>, old_string không duy nhất</div><div class="ans"><div class="pick"><b>Read + Write</b> cả file</div><div class="trap"><span>Loại:</span> replace_all; old_string 30 dòng; heredoc</div></div><div class="ref">Q2</div></div>
+<div class="row multi" tabindex="0" data-ref="Q131 · Q143 · Q108"><div class="kw">Tìm file <b>import</b> X / tìm <b>eval(</b> / tìm <b>chuỗi lỗi</b></div><div class="ans"><div class="pick"><b>Grep</b> (theo nội dung)</div><div class="trap"><span>Loại:</span> Glob (theo tên file); ls -R | grep</div></div><div class="ref">Q131 · Q143 · Q108</div></div>
+<div class="row" tabindex="0" data-ref="Q6"><div class="kw">Hàm được <b>export lại dưới tên khác</b></div><div class="ans"><div class="pick">Đọc wrapper lấy mọi tên → <b>Grep từng tên</b></div><div class="trap"><span>Loại:</span> Grep tên gốc; đọc tài liệu</div></div><div class="ref">Q6</div></div>
+<div class="row" tabindex="0" data-ref="Q14"><div class="kw">800+ file, cần hiểu luồng auth</div><div class="ans"><div class="pick"><b>Grep điểm vào → Read → lần theo import</b></div><div class="trap"><span>Loại:</span> Grep "token" toàn repo</div></div><div class="ref">Q14</div></div>
+</section>
+<section class="grp" id="g-g" data-name="Cấu hình Claude Code"><h2><span class="gl">G</span>Cấu hình Claude Code<span class="gc">12 mẫu</span></h2>
+<div class="row" tabindex="0" data-ref="Q138"><div class="kw">CLAUDE.md 500+ dòng, <b>chỉ nạp quy tắc Terraform khi sửa file terraform</b></div><div class="ans"><div class="pick"><code>.claude/rules/</code> + frontmatter <code>paths</code></div><div class="trap"><span>Loại:</span> @import (vẫn nạp mọi phiên); chia header</div></div><div class="ref">Q138</div></div>
+<div class="row" tabindex="0" data-ref="Q90"><div class="kw">Package theo domain, <b>maintainer biết</b> cần tiêu chuẩn nào</div><div class="ans"><div class="pick"><b>@import</b> đúng file trong CLAUDE.md từng package</div><div class="trap"><span>Loại:</span> rules với paths; gộp một file</div></div><div class="ref">Q90</div></div>
+<div class="row" tabindex="0" data-ref="Q120"><div class="kw">Lúc theo CLAUDE.md lúc không, "<b>first diagnostic step</b>"</div><div class="ans"><div class="pick"><code>/memory</code></div><div class="trap"><span>Loại:</span> Thêm ví dụ; tạo rules</div></div><div class="ref">Q120</div></div>
+<div class="row" tabindex="0" data-ref="Q148"><div class="kw">Cả nhóm gõ <b>/migrate-component</b>, đồng bộ qua git</div><div class="ans"><div class="pick"><code>.claude/skills/migrate-component/SKILL.md</code></div><div class="trap"><span>Loại:</span> ~/.claude/skills; CLAUDE.md</div></div><div class="ref">Q148</div></div>
+<div class="row" tabindex="0" data-ref="Q154"><div class="kw">Dừng ở <b>số vòng cố định và số tiền cố định</b>, "<b>enforced by Claude Code itself</b>"</div><div class="ans"><div class="pick"><code>--max-turns</code> + <code>--max-budget-usd</code></div><div class="trap"><span>Loại:</span> timeout-minutes; --permission-mode</div></div><div class="ref">Q154</div></div>
+<div class="row" tabindex="0" data-ref="Q159"><div class="kw"><code>claude -p</code> <b>chỉ đọc diff</b>, không dùng tool đọc file</div><div class="ans"><div class="pick"><code>--append-system-prompt</code> thay <code>--system-prompt</code></div><div class="trap"><span>Loại:</span> Truyền diff qua stdin; --allowedTools</div></div><div class="ref">Q159</div></div>
+<div class="row multi" tabindex="0" data-ref="Q144 · Q160"><div class="kw">55% test kém giá trị, "<b>in the first place</b>"</div><div class="ans"><div class="pick"><b>Tiêu chuẩn test trong CLAUDE.md</b> (tiêu chí, fixture, ví dụ)</div><div class="trap"><span>Loại:</span> Lọc coverage; lượt chấm thứ hai</div></div><div class="ref">Q144 · Q160</div></div>
+<div class="row" tabindex="0" data-ref="Q89"><div class="kw">Việc <b>một lần</b>, đã biết 3 module mẫu</div><div class="ans"><div class="pick"><b>@file tham chiếu</b> 3 module vào prompt</div><div class="trap"><span>Loại:</span> Thêm vào CLAUDE.md; tự khám phá</div></div><div class="ref">Q89</div></div>
+<div class="row" tabindex="0" data-ref="Q88"><div class="kw">Các lỗi <b>ảnh hưởng lẫn nhau</b> (cột → ngày → ngắt trang)</div><div class="ans"><div class="pick"><b>Sửa tuần tự theo phụ thuộc, test mỗi bước</b></div><div class="trap"><span>Loại:</span> Sửa cả ba cùng lúc</div></div><div class="ref">Q88</div></div>
+<div class="row" tabindex="0" data-ref="Q104"><div class="kw"><b>Mới làm caching</b>, chưa biết cần cân nhắc gì</div><div class="ans"><div class="pick"><b>Interview pattern</b>: để Claude hỏi trước</div><div class="trap"><span>Loại:</span> Làm tối thiểu rồi sửa</div></div><div class="ref">Q104</div></div>
+<div class="row" tabindex="0" data-ref="Q105"><div class="kw">Script xử lý sai <b>null</b></div><div class="ans"><div class="pick"><b>Test case input + expected output</b></div><div class="trap"><span>Loại:</span> Mô tả bằng lời; "think harder"</div></div><div class="ref">Q105</div></div>
+<div class="row" tabindex="0" data-ref="Q137"><div class="kw">Thuật toán có <b>edge case + yêu cầu hiệu năng</b></div><div class="ans"><div class="pick"><b>Viết test trước</b>, mỗi vòng gửi test fail</div><div class="trap"><span>Loại:</span> Lên kế hoạch rồi viết một lần</div></div><div class="ref">Q137</div></div>
+</section>
+<section class="grp" id="g-h" data-name="Prompt &amp; structured output"><h2><span class="gl">H</span>Prompt &amp; structured output<span class="gc">16 mẫu</span></h2>
+<div class="row" tabindex="0" data-ref="Q22"><div class="kw">Model <b>bịa "500"</b> cho trường không có, schema đã nullable</div><div class="ans"><div class="pick"><b>Chỉ dẫn trả null</b> nếu không nêu trực tiếp</div><div class="trap"><span>Loại:</span> Non-nullable; model mạnh hơn</div></div><div class="ref">Q22</div></div>
+<div class="row" tabindex="0" data-ref="Q21"><div class="kw">Định dạng <b>không thống nhất</b> ("cotton blend" / "Cotton/Polyester")</div><div class="ans"><div class="pick"><b>Few-shot 2–3 cặp</b> input–output</div><div class="trap"><span>Loại:</span> temperature 0; bắt buộc trường</div></div><div class="ref">Q21</div></div>
+<div class="row" tabindex="0" data-ref="Q23"><div class="kw">Thông tin <b>có nhưng ở nhiều dạng</b> (citation nội dòng / cuối bài)</div><div class="ans"><div class="pick"><b>Few-shot từ tài liệu cấu trúc đa dạng</b></div><div class="trap"><span>Loại:</span> Regex; optional; retry</div></div><div class="ref">Q23</div></div>
+<div class="row" tabindex="0" data-ref="Q29"><div class="kw">Cụm ghép, kỹ năng ngụ ý, độ dài mảng thất thường</div><div class="ans"><div class="pick"><b>Few-shot minh họa tiêu chí</b></div><div class="trap"><span>Loại:</span> Giới hạn 10–20 mục; chuẩn hóa sau</div></div><div class="ref">Q29</div></div>
+<div class="row" tabindex="0" data-ref="Q84"><div class="kw">Hội thoại &gt; 12 lượt thì <b>bỏ qua hướng dẫn dài dòng</b></div><div class="ans"><div class="pick"><b>Thay hướng dẫn dài bằng few-shot</b> từng trình độ</div><div class="trap"><span>Loại:</span> Nhắc định kỳ; đổi vị trí</div></div><div class="ref">Q84</div></div>
+<div class="row" tabindex="0" data-ref="Q158"><div class="kw">Giảm false positive và <b>generalize to novel patterns</b></div><div class="ans"><div class="pick"><b>Few-shot đoạn code có chú thích</b></div><div class="trap"><span>Loại:</span> Danh sách loại trừ; "be conservative"</div></div><div class="ref">Q158</div></div>
+<div class="row" tabindex="0" data-ref="Q94"><div class="kw">Bỏ sót <b>nhánh</b> chưa test, "<b>without overcomplicating</b>"</div><div class="ans"><div class="pick"><b>Few-shot</b> code có nhánh chưa test + comment</div><div class="trap"><span>Loại:</span> Pipeline nhiều lượt</div></div><div class="ref">Q94</div></div>
+<div class="row" tabindex="0" data-ref="Q126"><div class="kw">"<b>a handful</b>", "a splash", 847 lần sửa</div><div class="ans"><div class="pick"><b>Few-shot giữ nguyên văn</b></div><div class="trap"><span>Loại:</span> Fine-tune; enum measurement_type</div></div><div class="ref">Q126</div></div>
+<div class="row" tabindex="0" data-ref="Q142"><div class="kw">Không bắt được <b>tín hiệu trình độ ngầm</b>, nhiều điều kiện if</div><div class="ans"><div class="pick"><b>Nguyên tắc tổng quát</b> + giữ điều kiện an toàn</div><div class="trap"><span>Loại:</span> Thêm nhánh if; bảng hỏi</div></div><div class="ref">Q142</div></div>
+<div class="row" tabindex="0" data-ref="Q26"><div class="kw"><b>Enum</b> lỗi 8%, <b>loại mới</b> liên tục</div><div class="ans"><div class="pick">Thêm <b>"other" + trường detail</b></div><div class="trap"><span>Loại:</span> Mở rộng enum mãi; chuỗi tự do</div></div><div class="ref">Q26</div></div>
+<div class="row" tabindex="0" data-ref="Q149"><div class="kw">"<b>Great product!</b>" bị bịa pros/cons; review <b>mỉa mai</b></div><div class="ans"><div class="pick"><b>Mảng rỗng hợp lệ + "unclear"</b> trong enum</div><div class="trap"><span>Loại:</span> Null cho mảng; "neutral"</div></div><div class="ref">Q149</div></div>
+<div class="row" tabindex="0" data-ref="Q16"><div class="kw">Hợp đồng có <b>amendment</b> (30 ngày → 45 ngày)</div><div class="ans"><div class="pick"><b>Nhiều giá trị kèm vị trí nguồn + ngày hiệu lực</b></div><div class="trap"><span>Loại:</span> Luôn lấy bản mới nhất</div></div><div class="ref">Q16</div></div>
+<div class="row" tabindex="0" data-ref="Q25"><div class="kw">"$12" vs "12.00", <b>icon vs text</b></div><div class="ans"><div class="pick"><b>Schema chặt + quy tắc chuẩn hóa</b> trong prompt</div><div class="trap"><span>Loại:</span> Mỗi trường một lời gọi; bỏ phiếu</div></div><div class="ref">Q25</div></div>
+<div class="row multi" tabindex="0" data-ref="Q18 · Q61"><div class="kw">Line items <b>không cộng ra total</b></div><div class="ans"><div class="pick"><code>calculated_total</code> vs <code>stated_total</code> + <b>cờ review</b></div><div class="trap"><span>Loại:</span> Tự chỉnh số; model thứ hai</div></div><div class="ref">Q18 · Q61</div></div>
+<div class="row multi" tabindex="0" data-ref="Q71 · Q75"><div class="kw">Lỗi <b>semantic validation</b> 12% / lỗi <b>Pydantic</b> cụ thể</div><div class="ans"><div class="pick"><b>Retry kèm lỗi validation cụ thể</b> + tài liệu gốc</div><div class="trap"><span>Loại:</span> Retry mù; temperature 0</div></div><div class="ref">Q71 · Q75</div></div>
+<div class="row" tabindex="0" data-ref="Q24"><div class="kw">Retry <b>LEAST effective</b> khi nào</div><div class="ans"><div class="pick">Khi <b>thông tin không có trong input</b> (et al.)</div><div class="trap"><span>Loại:</span> Lỗi định dạng (retry sửa được)</div></div><div class="ref">Q24</div></div>
+</section>
+<section class="grp" id="g-i" data-name="Batch API"><h2><span class="gl">I</span>Batch API<span class="gc">5 mẫu</span></h2>
+<div class="row" tabindex="0" data-ref="Q28"><div class="kw">Batch <b>tới 24h</b>, SLA <b>30h</b></div><div class="ans"><div class="pick"><b>Gửi mỗi 4 giờ</b> (4 + 24 = 28, còn dự phòng)</div><div class="trap"><span>Loại:</span> Mỗi 6 giờ (chạm hạn); cuối ngày</div></div><div class="ref">Q28</div></div>
+<div class="row" tabindex="0" data-ref="Q30"><div class="kw">Báo cáo <b>gấp 30 phút</b> + báo cáo tháng</div><div class="ans"><div class="pick">Gấp → <b>real-time</b>; tháng → <b>batch</b></div><div class="trap"><span>Loại:</span> Batch hàng giờ; real-time cho tất cả</div></div><div class="ref">Q30</div></div>
+<div class="row" tabindex="0" data-ref="Q121"><div class="kw">Yếu tố <b>quyết định</b> có dùng batch không</div><div class="ans"><div class="pick"><b>Kết quả trễ tới 24h còn dùng được không</b></div><div class="trap"><span>Loại:</span> Thứ tự kết quả; "batch nhanh hơn"</div></div><div class="ref">Q121</div></div>
+<div class="row" tabindex="0" data-ref="Q20"><div class="kw">300/10.000 lỗi <b>context_length_exceeded</b></div><div class="ans"><div class="pick"><b>Chunk và gửi lại đúng 300 theo custom_id</b></div><div class="trap"><span>Loại:</span> Tăng max_tokens; gửi lại toàn bộ</div></div><div class="ref">Q20</div></div>
+<div class="row" tabindex="0" data-ref="Q134"><div class="kw">50.000 tài liệu, <b>18% lỗi đa dạng</b>, hạn 2 tuần</div><div class="ans"><div class="pick"><b>Batch tất cả, gửi lại phần lỗi, chỉnh prompt giữa các vòng</b></div><div class="trap"><span>Loại:</span> Synchronous; mẫu 2.000</div></div><div class="ref">Q134</div></div>
+</section>
+<section class="grp" id="g-j" data-name="Kiến trúc review"><h2><span class="gl">J</span>Kiến trúc review<span class="gc">6 mẫu</span></h2>
+<div class="row" tabindex="0" data-ref="Q151"><div class="kw"><b>Cùng session</b> tự review, CI bắt được lỗi</div><div class="ans"><div class="pick"><b>Instance độc lập</b> (session giữ suy luận cũ)</div><div class="trap"><span>Loại:</span> Thiếu quyền đọc; context đầy</div></div><div class="ref">Q151</div></div>
+<div class="row" tabindex="0" data-ref="Q69"><div class="kw"><b>Precision cao, recall thấp</b>, "only report if certain"</div><div class="ans"><div class="pick"><b>Tách giai đoạn tìm (coverage) và giai đoạn lọc ngưỡng</b></div><div class="trap"><span>Loại:</span> Few-shot vẫn giữ chỉ dẫn bảo thủ</div></div><div class="ref">Q69</div></div>
+<div class="row" tabindex="0" data-ref="Q128"><div class="kw">Thêm ví dụ logic thì <b>recall API giảm</b></div><div class="ans"><div class="pick"><b>Tách thành các prompt tập trung</b>, gộp kết quả</div><div class="trap"><span>Loại:</span> Checklist; nâng model</div></div><div class="ref">Q128</div></div>
+<div class="row" tabindex="0" data-ref="Q96"><div class="kw">Bỏ sót lỗi <b>cross-file</b> (caller ở file không đổi)</div><div class="ans"><div class="pick"><b>Review agentic có giới hạn lượt</b>, dùng tool đọc/tìm</div><div class="trap"><span>Loại:</span> Nạp phụ thuộc 2 bước; CoT</div></div><div class="ref">Q96</div></div>
+<div class="row" tabindex="0" data-ref="Q107"><div class="kw">PR 30+ file, JSON <b>bị cắt ở max_tokens</b></div><div class="ans"><div class="pick"><b>Chia review theo nhóm file</b>, gộp findings</div><div class="trap"><span>Loại:</span> Tăng max_tokens; markdown</div></div><div class="ref">Q107</div></div>
+<div class="row" tabindex="0" data-ref="Q136"><div class="kw">Transcript dài <b>68%</b> vs ngắn 94%, <b>đều vừa context</b></div><div class="ans"><div class="pick"><b>Chunk, trích từng phần, gộp + dedupe</b></div><div class="trap"><span>Loại:</span> Tóm tắt trước; nâng model</div></div><div class="ref">Q136</div></div>
+</section>
+<section class="grp" id="g-k" data-name="Context &amp; hội thoại"><h2><span class="gl">K</span>Context &amp; hội thoại<span class="gc">19 mẫu</span></h2>
+<div class="row multi" tabindex="0" data-ref="Q58 · Q77 · Q99"><div class="kw">Hỏi lại tên / <b>quên "thích jazz"</b> / quên từ vựng</div><div class="ans"><div class="pick"><b>Không gửi lại lịch sử</b> trong messages (API stateless)</div><div class="trap"><span>Loại:</span> Context đầy; thiếu session_id</div></div><div class="ref">Q58 · Q77 · Q99</div></div>
+<div class="row" tabindex="0" data-ref="Q48"><div class="kw">Mỗi đơn <b>40+ trường</b> chiếm context</div><div class="ans"><div class="pick"><b>Cắt gọn, giữ trường liên quan</b></div><div class="trap"><span>Loại:</span> Vector DB; đổi sang văn xuôi</div></div><div class="ref">Q48</div></div>
+<div class="row multi" tabindex="0" data-ref="Q57 · Q122"><div class="kw">Lượt 48 hỏi refund ở lượt 1–15 / <b>dị ứng</b>, số khẩu phần, 68°F</div><div class="ans"><div class="pick"><b>Khối case facts có cấu trúc</b> gửi mỗi request</div><div class="trap"><span>Loại:</span> Sliding window; tóm tắt tường thuật</div></div><div class="ref">Q57 · Q122</div></div>
+<div class="row" tabindex="0" data-ref="Q157"><div class="kw"><b>Đổi ý</b> (budget $650K, condo) mà model dùng bản cũ, <b>context 35%</b></div><div class="ans"><div class="pick"><b>State object hiện hành</b> gửi mỗi request</div><div class="trap"><span>Loại:</span> "Ưu tiên cái mới nhất"</div></div><div class="ref">Q157</div></div>
+<div class="row" tabindex="0" data-ref="Q156"><div class="kw">Quên <b>đặc điểm nhân vật</b></div><div class="ans"><div class="pick"><b>Story bible</b> ở đầu context, chỉ tóm tắt brainstorm</div><div class="trap"><span>Loại:</span> Sliding window; retrieval</div></div><div class="ref">Q156</div></div>
+<div class="row" tabindex="0" data-ref="Q86"><div class="kw">Mất <b>p-value, cỡ mẫu</b> sau khi tóm tắt</div><div class="ans"><div class="pick"><b>Kho sự kiện có cấu trúc</b>, truy xuất khi cần chính xác</div><div class="trap"><span>Loại:</span> Giữ nguyên văn mọi bài</div></div><div class="ref">Q86</div></div>
+<div class="row multi" tabindex="0" data-ref="Q76 · Q79"><div class="kw">85K token, cần <b>kết luận các buổi trước</b> / sliding window mất phần đầu</div><div class="ans"><div class="pick"><b>Tóm tắt lũy tiến</b>: nén phần cũ, giữ nguyên văn phần gần</div><div class="trap"><span>Loại:</span> Rolling window; vector search</div></div><div class="ref">Q76 · Q79</div></div>
+<div class="row" tabindex="0" data-ref="Q147"><div class="kw"><b>Kết quả RAG cũ</b> tích lũy lấn lịch sử</div><div class="ans"><div class="pick"><b>Sliding window chỉ cho RAG</b> (2–3 truy vấn gần nhất)</div><div class="trap"><span>Loại:</span> Tóm tắt RAG; cắt lịch sử</div></div><div class="ref">Q147</div></div>
+<div class="row" tabindex="0" data-ref="Q78"><div class="kw">Trôi hành vi ở lượt 7, <b>chỉ 2.000 token</b></div><div class="ans"><div class="pick"><b>Câu trả lời assistant tích lũy làm loãng system prompt</b></div><div class="trap"><span>Loại:</span> Attention decay; prompt chỉ ở request đầu</div></div><div class="ref">Q78</div></div>
+<div class="row" tabindex="0" data-ref="Q80"><div class="kw">Lệch quy tắc lượt 25–30, <b>còn xa giới hạn</b></div><div class="ans"><div class="pick"><b>Chèn tin user nhắc quy tắc</b> ở điểm ngắt</div><div class="trap"><span>Loại:</span> Hội thoại mới sau 20 lượt</div></div><div class="ref">Q80</div></div>
+<div class="row" tabindex="0" data-ref="Q82"><div class="kw">Câu nào cũng mở đầu "<b>Certainly!</b>"</div><div class="ans"><div class="pick"><b>Prefill</b> tin nhắn assistant</div><div class="trap"><span>Loại:</span> Hậu xử lý; temperature</div></div><div class="ref">Q82</div></div>
+<div class="row" tabindex="0" data-ref="Q81"><div class="kw"><b>Webhook</b> "đã giao hàng" giữa hội thoại</div><div class="ans"><div class="pick"><b>Tiền tố vào tin user kế tiếp</b></div><div class="trap"><span>Loại:</span> Tin user giả; sửa system prompt</div></div><div class="ref">Q81</div></div>
+<div class="row" tabindex="0" data-ref="Q135"><div class="kw">Đổi system prompt, <b>người dùng cũ</b> thấy mâu thuẫn</div><div class="ans"><div class="pick"><b>Version system prompt</b> theo hội thoại</div><div class="trap"><span>Loại:</span> Viết lại lịch sử; thông báo</div></div><div class="ref">Q135</div></div>
+<div class="row" tabindex="0" data-ref="Q73"><div class="kw">Tài liệu <b>175–190K</b>, context 200K, mất 1/3 cuối</div><div class="ans"><div class="pick"><b>Định nghĩa tool cũng chiếm context</b></div><div class="trap"><span>Loại:</span> Quá nhiều trường schema</div></div><div class="ref">Q73</div></div>
+<div class="row" tabindex="0" data-ref="Q161"><div class="kw">Giọng điệu, hành vi <b>xuyên suốt</b> đặt ở đâu</div><div class="ans"><div class="pick"><b>System prompt</b></div><div class="trap"><span>Loại:</span> Tin assistant đầu; biến môi trường</div></div><div class="ref">Q161</div></div>
+<div class="row multi" tabindex="0" data-ref="Q5 · Q9 · Q62"><div class="kw">"<b>typical patterns</b>" thay vì tên lớp / sau 8 file kém chính xác</div><div class="ans"><div class="pick"><b>Tóm tắt phát hiện rồi spawn subagent</b></div><div class="trap"><span>Loại:</span> /clear; context lớn hơn; Grep</div></div><div class="ref">Q5 · Q9 · Q62</div></div>
+<div class="row" tabindex="0" data-ref="Q7"><div class="kw">Phiên 30+ phút <b>trả lời mâu thuẫn</b></div><div class="ans"><div class="pick"><b>File scratchpad</b> ghi phát hiện</div><div class="trap"><span>Loại:</span> Xóa context mỗi 15 phút</div></div><div class="ref">Q7</div></div>
+<div class="row" tabindex="0" data-ref="Q13"><div class="kw">Caching 15 file, <b>8.000 dòng</b></div><div class="ans"><div class="pick"><b>Import/kế thừa → lớp cơ sở → implementation</b></div><div class="trap"><span>Loại:</span> Đọc hết; đọc file lớn nhất</div></div><div class="ref">Q13</div></div>
+<div class="row" tabindex="0" data-ref="Q34"><div class="kw">Pipeline <b>crash sau 12/28</b> tài liệu</div><div class="ans"><div class="pick"><b>Mỗi agent lưu báo cáo trạng thái có cấu trúc</b>, coordinator nạp</div><div class="trap"><span>Loại:</span> Semantic search; log toàn bộ</div></div><div class="ref">Q34</div></div>
+</section>
+<section class="grp" id="g-l" data-name="Escalation &amp; mơ hồ"><h2><span class="gl">L</span>Escalation &amp; mơ hồ<span class="gc">7 mẫu</span></h2>
+<div class="row" tabindex="0" data-ref="Q49"><div class="kw">"<b>talk to a real person NOW</b>", chưa gọi tool</div><div class="ans"><div class="pick"><b>Escalate ngay</b> kèm lịch sử</div><div class="trap"><span>Loại:</span> Điều tra trước; hỏi thêm</div></div><div class="ref">Q49</div></div>
+<div class="row" tabindex="0" data-ref="Q55"><div class="kw">Khách bực nhưng ca <b>đơn giản, đủ điều kiện</b></div><div class="ans"><div class="pick">Ghi nhận, báo <b>xử lý được ngay</b>, <b>cho khách chọn</b></div><div class="trap"><span>Loại:</span> Tự xử lý luôn; escalate ngay</div></div><div class="ref">Q55</div></div>
+<div class="row" tabindex="0" data-ref="Q50"><div class="kw">Trigger escalation <b>đáng tin</b></div><div class="ans"><div class="pick"><b>Khách yêu cầu / cần ngoại lệ chính sách / không tiến triển</b></div><div class="trap"><span>Loại:</span> Sentiment; 3 lần fail; rules engine</div></div><div class="ref">Q50</div></div>
+<div class="row multi" tabindex="0" data-ref="Q47 · Q51"><div class="kw">Escalate giữa chừng / <b>người nhận không thấy transcript</b></div><div class="ans"><div class="pick"><b>Customer ID, root cause, số tiền, hành động đề xuất</b></div><div class="trap"><span>Loại:</span> Cả transcript; reference ID</div></div><div class="ref">Q47 · Q51</div></div>
+<div class="row multi" tabindex="0" data-ref="Q83 · Q101"><div class="kw">Hỏi <b>4,2 câu</b> làm rõ, 35–40% bỏ đi</div><div class="ans"><div class="pick"><b>Nêu giả định, làm luôn, mời sửa</b>; chỉ hỏi trước hành động không đảo ngược</div><div class="trap"><span>Loại:</span> Gộp câu hỏi; form; dùng mặc định ngầm</div></div><div class="ref">Q83 · Q101</div></div>
+<div class="row" tabindex="0" data-ref="Q100"><div class="kw"><b>Người dùng mới</b>, "Set up my focus music"</div><div class="ans"><div class="pick"><b>Hỏi đúng một câu</b> về loại hành động</div><div class="trap"><span>Loại:</span> Đoán; hỏi nhiều câu</div></div><div class="ref">Q100</div></div>
+<div class="row" tabindex="0" data-ref="Q133"><div class="kw">"Acme Corp" / "Acme Corporation", <b>8% xóa nhầm</b></div><div class="ans"><div class="pick"><b>Hiển thị bản ghi kèm trường phân biệt + xác nhận 1 click</b></div><div class="trap"><span>Loại:</span> Soft-delete; nhập ID</div></div><div class="ref">Q133</div></div>
+</section>
+<section class="grp" id="g-m" data-name="Confidence &amp; nguồn"><h2><span class="gl">M</span>Confidence &amp; nguồn<span class="gc">7 mẫu</span></h2>
+<div class="row" tabindex="0" data-ref="Q17"><div class="kw">Người review <b>chỉ xem được 20%</b></div><div class="ans"><div class="pick"><b>Confidence theo trường</b> + hiệu chỉnh ngưỡng bằng tập có nhãn</div><div class="trap"><span>Loại:</span> Ngẫu nhiên; chỉ trường trống</div></div><div class="ref">Q17</div></div>
+<div class="row" tabindex="0" data-ref="Q27"><div class="kw"><b>97% tổng thể</b>, trước khi tự động hóa</div><div class="ans"><div class="pick"><b>Phân tích theo loại tài liệu và theo trường</b></div><div class="trap"><span>Loại:</span> Tối ưu ngưỡng toàn cục</div></div><div class="ref">Q27</div></div>
+<div class="row" tabindex="0" data-ref="Q85"><div class="kw">12% ca <b>confidence cao vẫn sai</b>, cần đo theo thời gian</div><div class="ans"><div class="pick"><b>Stratified random sampling</b> hàng tuần</div><div class="trap"><span>Loại:</span> Trích xuất lại lần 2; hạ ngưỡng</div></div><div class="ref">Q85</div></div>
+<div class="row" tabindex="0" data-ref="Q117"><div class="kw">Agent làm tiếp với ca sai / xin review thừa</div><div class="ans"><div class="pick">Confidence + <b>requires_review + review_reasons</b></div><div class="trap"><span>Loại:</span> Few-shot đọc điểm; điểm tổng</div></div><div class="ref">Q117</div></div>
+<div class="row" tabindex="0" data-ref="Q33"><div class="kw">2022: 18% vs 2024: 35% bị coi là <b>mâu thuẫn</b></div><div class="ans"><div class="pick"><b>Kèm ngày</b> trong output có cấu trúc</div><div class="trap"><span>Loại:</span> Bỏ dữ liệu cũ</div></div><div class="ref">Q33</div></div>
+<div class="row" tabindex="0" data-ref="Q35"><div class="kw">Xử lý <b>bất định</b> không nhất quán</div><div class="ans"><div class="pick"><b>Mục riêng: đã xác nhận vs còn tranh cãi</b></div><div class="trap"><span>Loại:</span> Quy về xác suất 0–1</div></div><div class="ref">Q35</div></div>
+<div class="row" tabindex="0" data-ref="Q37"><div class="kw">Mọi thứ bị <b>ép thành bullet</b></div><div class="ans"><div class="pick"><b>Trình bày theo loại nội dung</b> (bảng / văn xuôi)</div><div class="trap"><span>Loại:</span> Ép thành văn xuôi</div></div><div class="ref">Q37</div></div>
+</section>
+<p class="empty" id="empty" hidden>Không có dòng nào khớp. Thử từ khác, ví dụ: retry, fork, Grep.</p>
+</main>
+<footer><div class="wrap">Rút từ phần giải thích đáp án của 162 câu trong <code>CCAR-F_trainer.html</code>. Số Q là số câu trong trainer; số Q màu vàng đánh dấu mẫu xuất hiện ở từ 2 câu trở lên.</div></footer>
+<script>
+(function(){
+  function norm(s){return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d");}
+  var rows=[].slice.call(document.querySelectorAll(".row"));
+  var grps=[].slice.call(document.querySelectorAll(".grp"));
+  var data=rows.map(function(r){return{el:r,t:norm(r.textContent),refs:(r.getAttribute("data-ref").match(/Q\d+/g)||[]).map(function(x){return x.toLowerCase();})};});
+  var q=document.getElementById("q"),cnt=document.getElementById("cnt"),empty=document.getElementById("empty");
+  var drill=document.getElementById("drill"),multi=document.getElementById("multi");
+  function apply(){
+    var v=norm(q.value.trim()),isQ=/^q\d+$/.test(v),n=0,only=multi.checked;
+    data.forEach(function(d){
+      var hit=!v||(isQ?d.refs.indexOf(v)>-1:d.t.indexOf(v)>-1);
+      d.el.hidden=!hit; if(hit&&(!only||d.el.classList.contains("multi")))n++;
+    });
+    grps.forEach(function(g){
+      var vis=[].some.call(g.querySelectorAll(".row"),function(r){return !r.hidden&&(!only||r.classList.contains("multi"));});
+      g.hidden=!vis;
+    });
+    cnt.textContent=n+" mẫu"; empty.hidden=n>0;
+  }
+  q.addEventListener("input",apply);
+  multi.addEventListener("change",function(){document.body.classList.toggle("only-multi",multi.checked);apply();});
+  drill.addEventListener("change",function(){
+    document.body.classList.toggle("drill",drill.checked);
+    rows.forEach(function(r){r.classList.remove("show");});
+  });
+  function flip(r){if(document.body.classList.contains("drill"))r.classList.toggle("show");}
+  rows.forEach(function(r){
+    r.addEventListener("click",function(){flip(r);});
+    r.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();flip(r);}});
+  });
+  try{if(localStorage.getItem("ccarf-kw-drill")==="1"){drill.checked=true;document.body.classList.add("drill");}}catch(e){}
+  drill.addEventListener("change",function(){try{localStorage.setItem("ccarf-kw-drill",drill.checked?"1":"0");}catch(e){}});
+})();
+</script>
+</body>
+</html>
